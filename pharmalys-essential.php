@@ -31,17 +31,56 @@
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 /**
- * The Main Plugin Requirements Chekcer
+ * The Main Plugin Requirements Checker
  *
  * @since 1.0.0
  */
 final class Pharmalys_Essential {
 
+    /**
+     * Requirements Array
+     *
+     * @since 1.0.0
+     * @var array
+     */
+    private $requirements = [
+        'php' => [
+            'name'    => 'PHP',
+            'minimum' => '7.3',
+            'exists'  => true,
+            'met'     => false,
+            'checked' => false,
+            'current' => false,
+        ],
+        'wp'  => [
+            'name'    => 'WordPress',
+            'minimum' => '5.2',
+            'exists'  => true,
+            'checked' => false,
+            'met'     => false,
+            'current' => false,
+        ],
+    ];
+
+    /**
+     * Setup Plugin Requirements
+     *
+     * @since 1.0.0
+     *
+     */
     public function __construct() {
         // Always load translation
         add_action( 'plugins_loaded', [$this, 'load_text_domain'] );
+
+        // Initialize plugin functionalities or quit
+        $this->requirements_met() ? $this->initialize_modules() : $this->quit();
     }
 
+    /**
+     * Plugin Current Production Version
+     *
+     * @return string
+     */
     public static function get_version() {
         return '1.0.0';
     }
@@ -73,15 +112,106 @@ final class Pharmalys_Essential {
     /**
      * Load Localization Files
      *
+     * @since 1.0
      * @return void
      */
     public function load_text_domain() {
         $locale = apply_filters( 'plugin_locale', get_user_locale(), 'pharmalys-essential' );
-        
+
         unload_textdomain( 'pharmalys-essential' );
         load_textdomain( 'pharmalys-essential', WP_LANG_DIR . '/pharmalys-essential/pharmalys-essential-' . $locale . '.mo' );
         load_plugin_textdomain( 'pharmalys-essential', false, self::get_plugin_path() . 'languages/' );
     }
+
+    /**
+     * Check If All Requirements Are Fulfilled
+     *
+     * @return boolean
+     */
+    private function requirements_met() {
+        $this->prepare_requirement_versions();
+
+        $result  = true;
+        $to_meet = wp_list_pluck( $this->requirements, 'met' );
+
+        foreach ( $to_meet as $met ) {
+
+            if ( empty( $met ) ) {
+                $result = false;
+                continue;
+            }
+
+        }
+
+        return $result;
+
+    }
+
+    /**
+     * Requirement Version Prepare
+     *
+     * @since 1.0.0
+     *
+     * @return void
+     */
+    private function prepare_requirement_versions() {
+
+        foreach ( $this->requirements as $dependency => $config ) {
+
+            switch ( $dependency ) {
+            case 'php':
+                $version = phpversion();
+                break;
+            case 'wp':
+                $version = get_bloginfo( 'version' );
+                break;
+            default:
+                $version = false;
+            }
+
+            if ( !empty( $version ) ) {
+                $this->requirements[$dependency] = array_merge(
+                    $this->requirements[$dependency],
+                    [
+                        'current' => $version,
+                        'checked' => true,
+                        'met'     => version_compare( $version, $config['minimum'], '>=' ),
+                    ]
+                );
+            }
+
+        }
+
+    }
+
+    /**
+     * Initialize Plugin Modules
+     *
+     * @since 1.0.0
+     * @return void
+     */
+    private function initialize_modules() {
+
+    }
+
+    /**
+     * Quit Plugin Execution
+     *
+     * @return void
+     */
+    private function quit() {
+        add_action( 'admin_head', [$this, 'show_plugin_requirements_not_met_notice'] );
+    }
+
+    /**
+     * Show Error Notice For Missing Requirements
+     *
+     * @return void
+     */
+    public function show_plugin_requirements_not_met_notice() {
+        printf( '<div>Minimum requirements for %1$s are not met. Please update requirements to continue.</div>', esc_html( 'Pharmalys Essential' ) );
+    }
+
 }
 
 new Pharmalys_Essential();
