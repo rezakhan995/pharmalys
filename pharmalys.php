@@ -27,3 +27,16 @@
  * You should have received a copy of the GNU General Public License
  * along with Pharmalys Essential. If not, see <http://www.gnu.org/licenses/>.
 */
+
+// Exit if accessed directly
+defined('ABSPATH') || exit;
+/**
+ * The Main Plugin Requirements Chekcer
+ * 
+ * @since 1.0.0
+ */
+final class Pharmalys_Essential {
+
+}
+
+new Pharmalys_Essential();
