@@ -35,7 +35,13 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.0.0
  */
-final class Pharmalys_Essential {
+final class Pharmalys_Essential_Prepare {
+
+    /**
+     * Static Property To Hold Singleton Instance
+     *
+     */
+    private static $instance = null;
 
     /**
      * Requirements Array
@@ -63,12 +69,26 @@ final class Pharmalys_Essential {
     ];
 
     /**
+     * Singleton Instance
+     *
+     * @return void
+     */
+    public static function get_instance() {
+
+        if ( null === self::$instance ) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    /**
      * Setup Plugin Requirements
      *
      * @since 1.0.0
      *
      */
-    public function __construct() {
+    private function __construct() {
         // Always load translation
         add_action( 'plugins_loaded', [$this, 'load_text_domain'] );
 
@@ -192,6 +212,18 @@ final class Pharmalys_Essential {
      */
     private function initialize_modules() {
 
+        if ( !class_exists( 'Pharmalys_Essential' ) ) {
+            require_once self::get_plugin_path() . 'includes/class-pharmalys-essential.php';
+        }
+
+        if ( class_exists( 'Pharmalys_Essential' ) ) {
+            add_action( 'plugins_loaded', [$this, 'init'] );
+        }
+
+    }
+
+    public function init(){
+        
     }
 
     /**
@@ -214,4 +246,4 @@ final class Pharmalys_Essential {
 
 }
 
-new Pharmalys_Essential();
+Pharmalys_Essential_Prepare::get_instance();
