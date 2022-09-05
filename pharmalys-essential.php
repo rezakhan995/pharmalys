@@ -107,7 +107,7 @@ final class Pharmalys_Essential_Prepare {
 
         unload_textdomain( 'pharmalys-essential' );
         load_textdomain( 'pharmalys-essential', WP_LANG_DIR . '/pharmalys-essential/pharmalys-essential-' . $locale . '.mo' );
-        load_plugin_textdomain( 'pharmalys-essential', false, self::get_plugin_path() . 'languages/' );
+        load_plugin_textdomain( 'pharmalys-essential', false,self::get_plugin_dir() . 'languages/' );
     }
 
     /**
@@ -118,12 +118,12 @@ final class Pharmalys_Essential_Prepare {
      */
     private function initialize_modules() {
 
-// Include the bootstraper file if not loaded
+        // Include the bootstraper file if not loaded
         if ( !class_exists( 'Pharmalys_Essential' ) ) {
-            require_once self::get_plugin_path() . 'includes/class-pharmalys-essential.php';
+            require_once self::get_plugin_dir() . 'includes/class-pharmalys-essential.php';
         }
 
-// Initialize the bootstraper if exists
+        // Initialize the bootstraper if exists
         if ( class_exists( 'Pharmalys_Essential' ) ) {
 
             // Initialize all modules through plugins_loaded
@@ -248,28 +248,22 @@ final class Pharmalys_Essential_Prepare {
         return '1.0.0';
     }
 
-    public static function get_assets_path() {
-        return trailingslashit( self::get_plugin_path() . 'assets' );
-    }
-
-    public static function get_assets_url() {
-        return trailingslashit( self::get_plugin_url() . 'assets' );
-    }
-
-    public static function get_plugin_path() {
-        return trailingslashit( plugin_dir_path( self::get_plugin_file() ) );
-    }
-
-    public static function get_plugin_url() {
-        return trailingslashit( plugin_dir_url( self::get_plugin_file() ) );
-    }
-
-    public static function get_plugin_basename() {
-        return plugin_basename( self::get_plugin_file() );
-    }
-
+    /**
+     * Plugin Main File
+     *
+     * @return string
+     */
     public static function get_plugin_file() {
         return __FILE__;
+    }
+
+    /**
+     * Plugin Base Directory Path
+     *
+     * @return void
+     */
+    public static function get_plugin_dir() {
+        return trailingslashit( plugin_dir_path( self::get_plugin_file() ) );
     }
 
 }
