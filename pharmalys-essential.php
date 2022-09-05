@@ -97,6 +97,138 @@ final class Pharmalys_Essential_Prepare {
     }
 
     /**
+     * Load Localization Files
+     *
+     * @since 1.0
+     * @return void
+     */
+    public function load_text_domain() {
+        $locale = apply_filters( 'plugin_locale', get_user_locale(), 'pharmalys-essential' );
+
+        unload_textdomain( 'pharmalys-essential' );
+        load_textdomain( 'pharmalys-essential', WP_LANG_DIR . '/pharmalys-essential/pharmalys-essential-' . $locale . '.mo' );
+        load_plugin_textdomain( 'pharmalys-essential', false, self::get_plugin_path() . 'languages/' );
+    }
+
+    /**
+     * Initialize Plugin Modules
+     *
+     * @since 1.0.0
+     * @return void
+     */
+    private function initialize_modules() {
+        // Include the bootstraper file if not loaded
+        if ( !class_exists( 'Pharmalys_Essential' ) ) {
+            require_once self::get_plugin_path() . 'includes/class-pharmalys-essential.php';
+        }
+
+        // Initialize the bootstraper if exists
+        if ( class_exists( 'Pharmalys_Essential' ) ) {
+
+            // Initialize all modules through plugins_loaded
+            add_action( 'plugins_loaded', [$this, 'init'] );
+
+            register_activation_hook( self::get_plugin_file(), [$this, 'activate'] );
+            register_deactivation_hook( self::get_plugin_file(), [$this, 'deactivate'] );
+        }
+
+    }
+
+    /**
+     * Check If All Requirements Are Fulfilled
+     *
+     * @return boolean
+     */
+    private function requirements_met() {
+
+        $this->prepare_requirement_versions();
+
+        $passed  = true;
+        $to_meet = wp_list_pluck( $this->requirements, 'met' );
+
+        foreach ( $to_meet as $met ) {
+
+            if ( empty( $met ) ) {
+                $passed = false;
+                continue;
+            }
+
+        }
+
+        return $passed;
+
+    }
+
+    /**
+     * Requirement Version Prepare
+     *
+     * @since 1.0.0
+     *
+     * @return void
+     */
+    private function prepare_requirement_versions() {
+
+        foreach ( $this->requirements as $dependency => $config ) {
+
+            switch ( $dependency ) {
+            case 'php':
+                $version = phpversion();
+                break;
+            case 'wp':
+                $version = get_bloginfo( 'version' );
+                break;
+            default:
+                $version = false;
+            }
+
+            if ( !empty( $version ) ) {
+                $this->requirements[$dependency]['current'] = $version;
+                $this->requirements[$dependency]['checked'] = true;
+                $this->requirements[$dependency]['met']     = version_compare( $version, $config['minimum'], '>=' );
+            }
+
+        }
+
+    }
+
+    /**
+     * Initialize everything
+     * 
+     * @since 1.0.0
+     *
+     * @return void
+     */
+    public function init() {
+
+    }
+
+    private function activate(){
+
+    }
+
+    private function deactivate(){
+
+    }
+
+    /**
+     * Quit Plugin Execution
+     *
+     * @return void
+     */
+    private function quit() {
+        add_action( 'admin_head', [$this, 'show_plugin_requirements_not_met_notice'] );
+    }
+
+    /**
+     * Show Error Notice For Missing Requirements
+     *
+     * @return void
+     */
+    public function show_plugin_requirements_not_met_notice() {
+        printf( '<div>Minimum requirements for %1$s are not met. Please update requirements to continue.</div>', esc_html( 'Pharmalys Essential' ) );
+    }
+
+    /**
      * Plugin Current Production Version
      *
      * @return string
@@ -127,121 +259,6 @@ final class Pharmalys_Essential_Prepare {
 
     public static function get_plugin_file() {
         return __FILE__;
-    }
-
-    /**
-     * Load Localization Files
-     *
-     * @since 1.0
-     * @return void
-     */
-    public function load_text_domain() {
-        $locale = apply_filters( 'plugin_locale', get_user_locale(), 'pharmalys-essential' );
-
-        unload_textdomain( 'pharmalys-essential' );
-        load_textdomain( 'pharmalys-essential', WP_LANG_DIR . '/pharmalys-essential/pharmalys-essential-' . $locale . '.mo' );
-        load_plugin_textdomain( 'pharmalys-essential', false, self::get_plugin_path() . 'languages/' );
-    }
-
-    /**
-     * Check If All Requirements Are Fulfilled
-     *
-     * @return boolean
-     */
-    private function requirements_met() {
-        $this->prepare_requirement_versions();
-
-        $result  = true;
-        $to_meet = wp_list_pluck( $this->requirements, 'met' );
-
-        foreach ( $to_meet as $met ) {
-
-            if ( empty( $met ) ) {
-                $result = false;
-                continue;
-            }
-
-        }
-
-        return $result;
-
-    }
-
-    /**
-     * Requirement Version Prepare
-     *
-     * @since 1.0.0
-     *
-     * @return void
-     */
-    private function prepare_requirement_versions() {
-
-        foreach ( $this->requirements as $dependency => $config ) {
-
-            switch ( $dependency ) {
-            case 'php':
-                $version = phpversion();
-                break;
-            case 'wp':
-                $version = get_bloginfo( 'version' );
-                break;
-            default:
-                $version = false;
-            }
-
-            if ( !empty( $version ) ) {
-                $this->requirements[$dependency] = array_merge(
-                    $this->requirements[$dependency],
-                    [
-                        'current' => $version,
-                        'checked' => true,
-                        'met'     => version_compare( $version, $config['minimum'], '>=' ),
-                    ]
-                );
-            }
-
-        }
-
-    }
-
-    /**
-     * Initialize Plugin Modules
-     *
-     * @since 1.0.0
-     * @return void
-     */
-    private function initialize_modules() {
-
-        if ( !class_exists( 'Pharmalys_Essential' ) ) {
-            require_once self::get_plugin_path() . 'includes/class-pharmalys-essential.php';
-        }
-
-        if ( class_exists( 'Pharmalys_Essential' ) ) {
-            add_action( 'plugins_loaded', [$this, 'init'] );
-        }
-
-    }
-
-    public function init(){
-        
-    }
-
-    /**
-     * Quit Plugin Execution
-     *
-     * @return void
-     */
-    private function quit() {
-        add_action( 'admin_head', [$this, 'show_plugin_requirements_not_met_notice'] );
-    }
-
-    /**
-     * Show Error Notice For Missing Requirements
-     *
-     * @return void
-     */
-    public function show_plugin_requirements_not_met_notice() {
-        printf( '<div>Minimum requirements for %1$s are not met. Please update requirements to continue.</div>', esc_html( 'Pharmalys Essential' ) );
     }
 
 }
