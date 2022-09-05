@@ -41,7 +41,7 @@ final class Pharmalys_Essential_Prepare {
      * Static Property To Hold Singleton Instance
      *
      */
-    private static $instance = null;
+    private static $instance;
 
     /**
      * Requirements Array
@@ -117,12 +117,13 @@ final class Pharmalys_Essential_Prepare {
      * @return void
      */
     private function initialize_modules() {
-        // Include the bootstraper file if not loaded
+
+// Include the bootstraper file if not loaded
         if ( !class_exists( 'Pharmalys_Essential' ) ) {
             require_once self::get_plugin_path() . 'includes/class-pharmalys-essential.php';
         }
 
-        // Initialize the bootstraper if exists
+// Initialize the bootstraper if exists
         if ( class_exists( 'Pharmalys_Essential' ) ) {
 
             // Initialize all modules through plugins_loaded
@@ -193,20 +194,30 @@ final class Pharmalys_Essential_Prepare {
 
     /**
      * Initialize everything
-     * 
+     *
      * @since 1.0.0
      *
      * @return void
      */
     public function init() {
+        Pharmalys_Essential::instantiate( self::get_plugin_file() );
+    }
+
+    /**
+     * Called Only Once While Activation
+     *
+     * @return void
+     */
+    private function activate() {
 
     }
 
-    private function activate(){
-
-    }
-
-    private function deactivate(){
+    /**
+     * Called Only Once While Deactivation
+     *
+     * @return void
+     */
+    private function deactivate() {
 
     }
 
