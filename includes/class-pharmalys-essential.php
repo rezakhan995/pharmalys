@@ -91,6 +91,53 @@ if ( !class_exists( 'Pharmalys_Essential' ) ) {
         }
 
         /**
+         * Assets Directory URL
+         *
+         * @since 1.0.0
+         * @return void
+         */
+        public function get_assets_url(){
+            return trailingslashit( PE_PLUGIN_URL . 'assets' );
+        }
+
+        /**
+         * Assets Directory Path
+         *
+         * @since 1.0.0
+         * @return void
+         */
+        public function get_assets_dir(){
+            return trailingslashit( PE_PLUGIN_DIR . 'assets' );
+        }
+
+        /**
+         * Plugin Directory URL
+         *
+         * @return void
+         */
+        public function get_plugin_url(){
+            return trailingslashit( plugin_dir_url( PE_PLUGIN_FILE ) );
+        }
+
+        /**
+         * Plugin Directory Path
+         *
+         * @return void
+         */
+        public function get_plugin_dir(){
+            return Pharmalys_Essential_Prepare::get_plugin_dir();
+        }
+
+        /**
+         * Plugin Basename
+         *
+         * @return void
+         */
+        public function get_plugin_basename(){
+            return plugin_basename( PE_PLUGIN_FILE );
+        }
+
+        /**
          * Setup Plugin Constants
          *
          * @since 1.0.0
@@ -110,27 +157,27 @@ if ( !class_exists( 'Pharmalys_Essential' ) ) {
 
             // Plugin File Basename
             if ( !defined( 'PE_PLUGIN_BASE' ) ) {
-                define( 'PE_PLUGIN_BASE', plugin_basename( PE_PLUGIN_FILE ) );
+                define( 'PE_PLUGIN_BASE', $this->get_plugin_basename() );
             }
 
             // Plugin Main Directory Path
             if ( !defined( 'PE_PLUGIN_DIR' ) ) {
-                define( 'PE_PLUGIN_DIR', Pharmalys_Essential_Prepare::get_plugin_dir() );
+                define( 'PE_PLUGIN_DIR', $this->get_plugin_dir() );
             }
 
             // Plugin Main Directory URL
             if ( !defined( 'PE_PLUGIN_URL' ) ) {
-                define( 'PE_PLUGIN_URL', trailingslashit( plugin_dir_url( PE_PLUGIN_FILE ) ) );
+                define( 'PE_PLUGIN_URL', $this->get_plugin_url() );
             }
 
             // Plugin Assets Directory URL
             if ( !defined( 'PE_ASSETS_URL' ) ) {
-                define( 'PE_ASSETS_URL', trailingslashit( PE_PLUGIN_URL . 'assets' ) );
+                define( 'PE_ASSETS_URL', $this->get_assets_url() );
             }
 
             // Plugin Assets Directory Path
             if ( !defined( 'PE_ASSETS_DIR' ) ) {
-                define( 'PE_ASSETS_DIR', trailingslashit( PE_PLUGIN_DIR . 'assets' ) );
+                define( 'PE_ASSETS_DIR', $this->get_assets_dir() );
             }
 
         }
