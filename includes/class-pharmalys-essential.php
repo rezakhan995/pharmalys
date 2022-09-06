@@ -56,7 +56,9 @@ if ( !class_exists( 'Pharmalys_Essential' ) ) {
             self::prepare_instance( $file );
 
             self::$instance->initialize_constants();
+            self::$instance->define_tables();
             self::$instance->include_files();
+            self::$instance->initialize_hooks();
 
             return self::$instance;
 
@@ -134,12 +136,32 @@ if ( !class_exists( 'Pharmalys_Essential' ) ) {
         }
 
         /**
+         * Define DB Tables Required For This Plugin
+         *
+         * @since 1.0.0
+         * @return void
+         */
+        private function define_tables(){
+
+        }
+
+        /**
          * Include All Required Files
          *
          * @since 1.0.0
          * @return void
          */
         private function include_files() {
+
+        }
+
+        /**
+         * Initialize All Hooks
+         * 
+         * @since 1.0.0
+         * @return void
+         */
+        private function initialize_hooks(){
 
         }
     }
