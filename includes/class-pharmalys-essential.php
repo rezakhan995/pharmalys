@@ -23,6 +23,23 @@ if ( !class_exists( 'Pharmalys_Essential' ) ) {
         private $file = '';
 
         /**
+         * Throw Error While Trying To Clone Object
+         *
+         * @since 1.0.0
+         * @return void
+         */
+        public function __clone() {
+            _doing_it_wrong( __FUNCTION__, __( 'Cloning is forbidden.', 'pharmalys-essential' ), '1.0.0' );
+        }
+
+        /**
+         * Disabling Un-serialization Of This Class
+         */
+        public function __wakeup() {
+            _doing_it_wrong( __FUNCTION__, __( 'Unserializing instances of this class is forbidden.', 'pharmalys-essential' ), '1.0.0' );
+        }
+
+        /**
          * The actual Pharmalys_Essential instance
          *
          * @since 1.0.0
@@ -39,7 +56,7 @@ if ( !class_exists( 'Pharmalys_Essential' ) ) {
             self::prepare_instance( $file );
 
             self::$instance->initialize_constants();
-            self::$instance->initialize_modules();
+            self::$instance->include_files();
 
             return self::$instance;
 
@@ -122,21 +139,20 @@ if ( !class_exists( 'Pharmalys_Essential' ) ) {
          * @since 1.0.0
          * @return void
          */
-        private function initialize_modules(){
+        private function include_files() {
 
         }
-
     }
 
-    /**
-     * Returns The Instance Of Pharmalys_Essential.
-     * The main function that is responsible for returning Pharmalys_Essential instance.
-     *
-     * @since 1.0.0
-     * @return Pharmalys_Essential
-     */
-    function PE() {
-        return Pharmalys_Essential::instantiate();
-    }
+}
 
+/**
+ * Returns The Instance Of Pharmalys_Essential.
+ * The main function that is responsible for returning Pharmalys_Essential instance.
+ *
+ * @since 1.0.0
+ * @return Pharmalys_Essential
+ */
+function PE() {
+    return Pharmalys_Essential::instantiate();
 }
