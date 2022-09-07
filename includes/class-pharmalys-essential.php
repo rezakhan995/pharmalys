@@ -199,7 +199,12 @@ if ( !class_exists( 'Pharmalys_Essential' ) ) {
          * @return void
          */
         private function include_files() {
-
+            require_once PE_PLUGIN_DIR . 'includes/mime-types.php';
+            require_once PE_PLUGIN_DIR . 'includes/post-types.php';
+            require_once PE_PLUGIN_DIR . 'includes/widgets/manifest.php';
+            require_once PE_PLUGIN_DIR . 'includes/template-functions.php';
+            require_once PE_PLUGIN_DIR . 'includes/shortcodes.php';
+            require_once PE_PLUGIN_DIR . 'includes/install.php';
         }
 
         /**
