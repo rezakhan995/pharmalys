@@ -208,7 +208,7 @@ final class Pharmalys_Essential_Prepare {
      *
      * @return void
      */
-    private function activate() {
+    public function activate() {
 
     }
 
@@ -217,7 +217,7 @@ final class Pharmalys_Essential_Prepare {
      *
      * @return void
      */
-    private function deactivate() {
+    public function deactivate() {
 
     }
 

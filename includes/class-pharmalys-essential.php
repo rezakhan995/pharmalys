@@ -86,8 +86,9 @@ if ( !class_exists( 'Pharmalys_Essential' ) ) {
          * @return void
          */
         private static function prepare_instance( $file = '' ) {
-            self::$instance       = new self();
-            self::$instance->file = $file;
+            self::$instance             = new self();
+            self::$instance->file       = $file;
+            self::$instance->version    = Pharmalys_Essential_Prepare::get_version();
         }
 
         /**
@@ -146,41 +147,40 @@ if ( !class_exists( 'Pharmalys_Essential' ) ) {
         private function initialize_constants() {
 
             // Plugin Version
-            if ( !defined( 'PE_VERSION' ) ) {
-                define( 'PE_VERSION', Pharmalys_Essential_Prepare::get_version() );
-            }
+            self::$instance->define( 'PE_VERSION', Pharmalys_Essential_Prepare::get_version() );
 
             //  Plugin Main File
-            if ( !defined( 'PE_PLUGIN_FILE' ) ) {
-                define( 'PE_PLUGIN_FILE', $this->file );
-            }
+            self::$instance->define( 'PE_PLUGIN_FILE', $this->file );
 
             // Plugin File Basename
-            if ( !defined( 'PE_PLUGIN_BASE' ) ) {
-                define( 'PE_PLUGIN_BASE', $this->get_plugin_basename() );
-            }
+            self::$instance->define( 'PE_PLUGIN_BASE', $this->get_plugin_basename() );
 
             // Plugin Main Directory Path
-            if ( !defined( 'PE_PLUGIN_DIR' ) ) {
-                define( 'PE_PLUGIN_DIR', $this->get_plugin_dir() );
-            }
+            self::$instance->define( 'PE_PLUGIN_DIR', $this->get_plugin_dir() );
 
             // Plugin Main Directory URL
-            if ( !defined( 'PE_PLUGIN_URL' ) ) {
-                define( 'PE_PLUGIN_URL', $this->get_plugin_url() );
-            }
+            self::$instance->define( 'PE_PLUGIN_URL', $this->get_plugin_url() );
 
             // Plugin Assets Directory URL
-            if ( !defined( 'PE_ASSETS_URL' ) ) {
-                define( 'PE_ASSETS_URL', $this->get_assets_url() );
-            }
+            self::$instance->define( 'PE_ASSETS_URL', $this->get_assets_url() );
 
             // Plugin Assets Directory Path
-            if ( !defined( 'PE_ASSETS_DIR' ) ) {
-                define( 'PE_ASSETS_DIR', $this->get_assets_dir() );
-            }
+            self::$instance->define( 'PE_ASSETS_DIR', $this->get_assets_dir() );
 
         }
+        /**
+         * Define constant if not already set.
+         *
+         * @since 1.0.0
+         * @param string      $name  Constant name.
+         * @param string|bool $value Constant value.
+         */
+        private function define( $name, $value ) {
+            if ( ! defined( $name ) ) {
+                define( $name, $value );
+            }
+        }
+
 
         /**
          * Define DB Tables Required For This Plugin
@@ -189,7 +189,7 @@ if ( !class_exists( 'Pharmalys_Essential' ) ) {
          * @return void
          */
         private function define_tables(){
-
+            # To Be Implemented
         }
 
         /**
@@ -199,7 +199,6 @@ if ( !class_exists( 'Pharmalys_Essential' ) ) {
          * @return void
          */
         private function include_files() {
-            require_once PE_PLUGIN_DIR . 'includes/mime-types.php';
             require_once PE_PLUGIN_DIR . 'includes/post-types.php';
             require_once PE_PLUGIN_DIR . 'includes/widgets/manifest.php';
             require_once PE_PLUGIN_DIR . 'includes/template-functions.php';
@@ -214,7 +213,7 @@ if ( !class_exists( 'Pharmalys_Essential' ) ) {
          * @return void
          */
         private function initialize_hooks(){
-
+            # To be Implemented
         }
     }
 
