@@ -10,6 +10,27 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * Registers Main Menu For 
+ *
+ * @since 1.0.0
+ * @return void
+ */
+function pe_add_main_menu_page(){
+    add_action('admin_menu', function(){
+        add_menu_page(
+            __('Pharmalys', 'pharmalys-essential'),
+            __('Pharmalys', 'pharmalys-essential'),
+            'read',
+            'pharmalys-essential',
+            '',
+            'dashicons-store',
+            10
+        );
+    } );
+}
+add_action('init', 'pe_add_main_menu_page', 0);
+
+/**
  * Register Post Types
  *
  * @since 1.0.0
@@ -180,22 +201,12 @@ function pe_get_label_plural( $term, $lowercase = false ) {
 }
 
 /**
- * Registers Main Menu For 
+ * Register Taxonomy For Product CPT
  *
  * @since 1.0.0
  * @return void
  */
-function pe_add_main_menu_page(){
-    add_action('admin_menu', function(){
-        add_menu_page(
-            __('Pharmalys', 'pharmalys-essential'),
-            __('Pharmalys', 'pharmalys-essential'),
-            'read',
-            'pharmalys-essential',
-            '',
-            'dashicons-store',
-            10
-        );
-    } );
+function pe_register_product_taxonomy(){
+
 }
-add_action('init', 'pe_add_main_menu_page', 0);
+add_action('init', 'pe_register_product_taxonomy', 0 );
