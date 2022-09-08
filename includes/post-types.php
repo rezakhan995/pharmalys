@@ -125,7 +125,12 @@ function pe_setup_post_types() {
 }
 add_action( 'init', 'pe_setup_post_types', 1 );
 
-
+/**
+ * Labels For All CPT's
+ *
+ * @param [type] $term
+ * @return void
+ */
 function pe_get_default_product_labels( $term ) {
 
     $labels = [];
@@ -148,16 +153,38 @@ function pe_get_default_product_labels( $term ) {
     return $labels;
 }
 
+/**
+ * Singular Label For CPT
+ *
+ * @since 1.0.0
+ * @param [type] $term
+ * @param boolean $lowercase
+ * @return void
+ */
 function pe_get_label_singular( $term, $lowercase = false ) {
     $defaults = pe_get_default_product_labels( $term );
     return $lowercase ? strtolower( $defaults['singular'] ) : $defaults['singular'];
 }
 
+/**
+ * Plural Label For CPT
+ *
+ * @since 1.0.0
+ * @param [type] $term
+ * @param boolean $lowercase
+ * @return void
+ */
 function pe_get_label_plural( $term, $lowercase = false ) {
     $defaults = pe_get_default_product_labels( $term );
     return $lowercase ? strtolower( $defaults['plural'] ) : $defaults['plural'];
 }
 
+/**
+ * Registers Main Menu For 
+ *
+ * @since 1.0.0
+ * @return void
+ */
 function pe_add_main_menu_page(){
     add_action('admin_menu', function(){
         add_menu_page(
