@@ -107,7 +107,7 @@ final class Pharmalys_Essential_Prepare {
 
         unload_textdomain( 'pharmalys-essential' );
         load_textdomain( 'pharmalys-essential', WP_LANG_DIR . '/pharmalys-essential/pharmalys-essential-' . $locale . '.mo' );
-        load_plugin_textdomain( 'pharmalys-essential', false,self::get_plugin_dir() . 'languages/' );
+        load_plugin_textdomain( 'pharmalys-essential', false, self::get_plugin_dir() . 'languages/' );
     }
 
     /**

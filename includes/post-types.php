@@ -10,16 +10,16 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Registers Main Menu For 
+ * Registers Main Menu For
  *
  * @since 1.0.0
  * @return void
  */
-function pe_add_main_menu_page(){
-    add_action('admin_menu', function(){
+function pe_add_main_menu_page() {
+    add_action( 'admin_menu', function () {
         add_menu_page(
-            __('Pharmalys', 'pharmalys-essential'),
-            __('Pharmalys', 'pharmalys-essential'),
+            __( 'Pharmalys', 'pharmalys-essential' ),
+            __( 'Pharmalys', 'pharmalys-essential' ),
             'read',
             'pharmalys-essential',
             '',
@@ -28,7 +28,8 @@ function pe_add_main_menu_page(){
         );
     } );
 }
-add_action('init', 'pe_add_main_menu_page', 0);
+
+add_action( 'init', 'pe_add_main_menu_page', 0 );
 
 /**
  * Register Post Types
@@ -144,6 +145,7 @@ function pe_setup_post_types() {
     ];
     register_post_type( 'pe-story', apply_filters( 'pe_story_post_type_args', $story_args ) );
 }
+
 add_action( 'init', 'pe_setup_post_types', 1 );
 
 /**
@@ -206,7 +208,8 @@ function pe_get_label_plural( $term, $lowercase = false ) {
  * @since 1.0.0
  * @return void
  */
-function pe_register_product_taxonomy(){
+function pe_register_product_taxonomy() {
 
 }
-add_action('init', 'pe_register_product_taxonomy', 0 );
+
+add_action( 'init', 'pe_register_product_taxonomy', 0 );
