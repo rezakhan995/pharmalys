@@ -71,7 +71,7 @@ if ( !class_exists( 'Pharmalys_Essential' ) ) {
          * @return boolean
          */
         private static function instantiated() {
-            if (  ( null !== self::$instance ) && ( self::$instance instanceof Pharmalys_Essential ) ) {
+            if ( ( null !== self::$instance ) && ( self::$instance instanceof Pharmalys_Essential ) ) {
                 return true;
             }
 
