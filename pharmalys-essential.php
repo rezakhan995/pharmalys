@@ -37,234 +37,230 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Pharmalys_Essential_Prepare {
 
-    /**
-     * Static Property To Hold Singleton Instance
-     *
-     */
-    private static $instance;
+	/**
+	 * Static Property To Hold Singleton Instance
+	 */
+	private static $instance;
 
-    /**
-     * Requirements Array
-     *
-     * @since 1.0.0
-     * @var array
-     */
-    private $requirements = [
-        'php' => [
-            'name'    => 'PHP',
-            'minimum' => '7.3',
-            'exists'  => true,
-            'met'     => false,
-            'checked' => false,
-            'current' => false,
-        ],
-        'wp'  => [
-            'name'    => 'WordPress',
-            'minimum' => '5.2',
-            'exists'  => true,
-            'checked' => false,
-            'met'     => false,
-            'current' => false,
-        ],
-    ];
+	/**
+	 * Requirements Array
+	 *
+	 * @since 1.0.0
+	 * @var array
+	 */
+	private $requirements = array(
+		'php' => array(
+			'name'    => 'PHP',
+			'minimum' => '7.3',
+			'exists'  => true,
+			'met'     => false,
+			'checked' => false,
+			'current' => false,
+		),
+		'wp'  => array(
+			'name'    => 'WordPress',
+			'minimum' => '5.2',
+			'exists'  => true,
+			'checked' => false,
+			'met'     => false,
+			'current' => false,
+		),
+	);
 
-    /**
-     * Singleton Instance
-     *
-     * @return void
-     */
-    public static function get_instance() {
+	/**
+	 * Singleton Instance
+	 *
+	 * @return void
+	 */
+	public static function get_instance() {
 
-        if ( null === self::$instance ) {
-            self::$instance = new self();
-        }
+		if ( null === self::$instance ) {
+			self::$instance = new self();
+		}
 
-        return self::$instance;
-    }
+		return self::$instance;
+	}
 
-    /**
-     * Setup Plugin Requirements
-     *
-     * @since 1.0.0
-     *
-     */
-    private function __construct() {
-        // Always load translation
-        add_action( 'plugins_loaded', [$this, 'load_text_domain'] );
+	/**
+	 * Setup Plugin Requirements
+	 *
+	 * @since 1.0.0
+	 */
+	private function __construct() {
+		// Always load translation
+		add_action( 'plugins_loaded', array( $this, 'load_text_domain' ) );
 
-        // Initialize plugin functionalities or quit
-        $this->requirements_met() ? $this->initialize_modules() : $this->quit();
-    }
+		// Initialize plugin functionalities or quit
+		$this->requirements_met() ? $this->initialize_modules() : $this->quit();
+	}
 
-    /**
-     * Load Localization Files
-     *
-     * @since 1.0
-     * @return void
-     */
-    public function load_text_domain() {
-        $locale = apply_filters( 'plugin_locale', get_user_locale(), 'pharmalys-essential' );
+	/**
+	 * Load Localization Files
+	 *
+	 * @since 1.0
+	 * @return void
+	 */
+	public function load_text_domain() {
+		$locale = apply_filters( 'plugin_locale', get_user_locale(), 'pharmalys-essential' );
 
-        unload_textdomain( 'pharmalys-essential' );
-        load_textdomain( 'pharmalys-essential', WP_LANG_DIR . '/pharmalys-essential/pharmalys-essential-' . $locale . '.mo' );
-        load_plugin_textdomain( 'pharmalys-essential', false, self::get_plugin_dir() . 'languages/' );
-    }
+		unload_textdomain( 'pharmalys-essential' );
+		load_textdomain( 'pharmalys-essential', WP_LANG_DIR . '/pharmalys-essential/pharmalys-essential-' . $locale . '.mo' );
+		load_plugin_textdomain( 'pharmalys-essential', false, self::get_plugin_dir() . 'languages/' );
+	}
 
-    /**
-     * Initialize Plugin Modules
-     *
-     * @since 1.0.0
-     * @return void
-     */
-    private function initialize_modules() {
+	/**
+	 * Initialize Plugin Modules
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	private function initialize_modules() {
 
-        // Include the bootstraper file if not loaded
-        if ( !class_exists( 'Pharmalys_Essential' ) ) {
-            require_once self::get_plugin_dir() . 'includes/class-pharmalys-essential.php';
-        }
+		// Include the bootstraper file if not loaded
+		if ( ! class_exists( 'Pharmalys_Essential' ) ) {
+			require_once self::get_plugin_dir() . 'includes/class-pharmalys-essential.php';
+		}
 
-        // Initialize the bootstraper if exists
-        if ( class_exists( 'Pharmalys_Essential' ) ) {
+		// Initialize the bootstraper if exists
+		if ( class_exists( 'Pharmalys_Essential' ) ) {
 
-            // Initialize all modules through plugins_loaded
-            add_action( 'plugins_loaded', [$this, 'init'] );
+			// Initialize all modules through plugins_loaded
+			add_action( 'plugins_loaded', array( $this, 'init' ) );
 
-            register_activation_hook( self::get_plugin_file(), [$this, 'activate'] );
-            register_deactivation_hook( self::get_plugin_file(), [$this, 'deactivate'] );
-        }
+			register_activation_hook( self::get_plugin_file(), array( $this, 'activate' ) );
+			register_deactivation_hook( self::get_plugin_file(), array( $this, 'deactivate' ) );
+		}
 
-    }
+	}
 
-    /**
-     * Check If All Requirements Are Fulfilled
-     *
-     * @return boolean
-     */
-    private function requirements_met() {
+	/**
+	 * Check If All Requirements Are Fulfilled
+	 *
+	 * @return boolean
+	 */
+	private function requirements_met() {
 
-        $this->prepare_requirement_versions();
+		$this->prepare_requirement_versions();
 
-        $passed  = true;
-        $to_meet = wp_list_pluck( $this->requirements, 'met' );
+		$passed  = true;
+		$to_meet = wp_list_pluck( $this->requirements, 'met' );
 
-        foreach ( $to_meet as $met ) {
+		foreach ( $to_meet as $met ) {
 
-            if ( empty( $met ) ) {
-                $passed = false;
-                continue;
-            }
+			if ( empty( $met ) ) {
+				$passed = false;
+				continue;
+			}
+		}
 
-        }
+		return $passed;
 
-        return $passed;
+	}
 
-    }
+	/**
+	 * Requirement Version Prepare
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	private function prepare_requirement_versions() {
 
-    /**
-     * Requirement Version Prepare
-     *
-     * @since 1.0.0
-     *
-     * @return void
-     */
-    private function prepare_requirement_versions() {
+		foreach ( $this->requirements as $dependency => $config ) {
 
-        foreach ( $this->requirements as $dependency => $config ) {
+			switch ( $dependency ) {
+				case 'php':
+					$version = phpversion();
+					break;
+				case 'wp':
+					$version = get_bloginfo( 'version' );
+					break;
+				default:
+					$version = false;
+			}
 
-            switch ( $dependency ) {
-            case 'php':
-                $version = phpversion();
-                break;
-            case 'wp':
-                $version = get_bloginfo( 'version' );
-                break;
-            default:
-                $version = false;
-            }
+			if ( ! empty( $version ) ) {
+				$this->requirements[ $dependency ]['current'] = $version;
+				$this->requirements[ $dependency ]['checked'] = true;
+				$this->requirements[ $dependency ]['met']     = version_compare( $version, $config['minimum'], '>=' );
+			}
+		}
 
-            if ( !empty( $version ) ) {
-                $this->requirements[$dependency]['current'] = $version;
-                $this->requirements[$dependency]['checked'] = true;
-                $this->requirements[$dependency]['met']     = version_compare( $version, $config['minimum'], '>=' );
-            }
+	}
 
-        }
+	/**
+	 * Initialize everything
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function init() {
+		Pharmalys_Essential::instantiate( self::get_plugin_file() );
+	}
 
-    }
+	/**
+	 * Called Only Once While Activation
+	 *
+	 * @return void
+	 */
+	public function activate() {
 
-    /**
-     * Initialize everything
-     *
-     * @since 1.0.0
-     *
-     * @return void
-     */
-    public function init() {
-        Pharmalys_Essential::instantiate( self::get_plugin_file() );
-    }
+	}
 
-    /**
-     * Called Only Once While Activation
-     *
-     * @return void
-     */
-    public function activate() {
+	/**
+	 * Called Only Once While Deactivation
+	 *
+	 * @return void
+	 */
+	public function deactivate() {
 
-    }
+	}
 
-    /**
-     * Called Only Once While Deactivation
-     *
-     * @return void
-     */
-    public function deactivate() {
+	/**
+	 * Quit Plugin Execution
+	 *
+	 * @return void
+	 */
+	private function quit() {
+		add_action( 'admin_head', array( $this, 'show_plugin_requirements_not_met_notice' ) );
+	}
 
-    }
+	/**
+	 * Show Error Notice For Missing Requirements
+	 *
+	 * @return void
+	 */
+	public function show_plugin_requirements_not_met_notice() {
+		printf( '<div>Minimum requirements for %1$s are not met. Please update requirements to continue.</div>', esc_html( 'Pharmalys Essential' ) );
+	}
 
-    /**
-     * Quit Plugin Execution
-     *
-     * @return void
-     */
-    private function quit() {
-        add_action( 'admin_head', [$this, 'show_plugin_requirements_not_met_notice'] );
-    }
+	/**
+	 * Plugin Current Production Version
+	 *
+	 * @return string
+	 */
+	public static function get_version() {
+		return '1.0.0';
+	}
 
-    /**
-     * Show Error Notice For Missing Requirements
-     *
-     * @return void
-     */
-    public function show_plugin_requirements_not_met_notice() {
-        printf( '<div>Minimum requirements for %1$s are not met. Please update requirements to continue.</div>', esc_html( 'Pharmalys Essential' ) );
-    }
+	/**
+	 * Plugin Main File
+	 *
+	 * @return string
+	 */
+	public static function get_plugin_file() {
+		return __FILE__;
+	}
 
-    /**
-     * Plugin Current Production Version
-     *
-     * @return string
-     */
-    public static function get_version() {
-        return '1.0.0';
-    }
-
-    /**
-     * Plugin Main File
-     *
-     * @return string
-     */
-    public static function get_plugin_file() {
-        return __FILE__;
-    }
-
-    /**
-     * Plugin Base Directory Path
-     *
-     * @return void
-     */
-    public static function get_plugin_dir() {
-        return trailingslashit( plugin_dir_path( self::get_plugin_file() ) );
-    }
+	/**
+	 * Plugin Base Directory Path
+	 *
+	 * @return void
+	 */
+	public static function get_plugin_dir() {
+		return trailingslashit( plugin_dir_path( self::get_plugin_file() ) );
+	}
 
 }
 
